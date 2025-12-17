@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/public/icon/to-do-list.png">
+    <link href="/styles/main.css" rel="stylesheet">
+    <title>TodoMVC: JavaScript Es6 Webpack</title>
+</head>
+<body>
+    <!--БЛОК TODOS-->
+    <section class="todos">
+        <div class="todos__container">
+            <header class="todos__title">
+                <h1>TODOS</h1>
+            </header>     
+            <main class="todos__input-container">
+                <div class="todos__input first">
+                    <img class="input-arrow" src="/public/icon/arrow.svg">
+                    <input class="input-text input-container" placeholder="What needs to be done?" autofocus>
+                </div>
+                <div class="todos__input">
+                    <div class="new-todo"></div>
+                </div>
+                <div class="todos__button-container">
+                    <div class="todos__count-container">
+                        <p class="todos__count"></p>
+                    </div>
+                    <div class="todos__button-status">
+                        <button class="active">All</button>
+                        <button>Active</button>
+                        <button>Completed</button>
+                    </div>
+                    <div class="todos__button-clear">
+                        <a>Clear completed</a>
+                    </div>
+                </div>
+            </main>
+            <footer class="todos__info">
+                <p>Double-click to edit a todo</p>
+                <p>Created by the TodoMVC Team</p>
+                <p>Part of <a href="https://todomvc.com/">TodoMVC</a></p>
+            </footer>  
+        </div>        
+    </section>
+       
+    <script src="/script/script.js"></script>
+</body>
+</html>
