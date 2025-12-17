@@ -44,7 +44,7 @@ input[type="checkbox"]:checked::after{
     top: 3px;   
     width: 23px;
     height: 23px;     
-    background-image: url(../../../public/icon/icons8-галочка.svg);
+    background-image: url(../public/icon/icons8-галочка.svg);
     border-color: var(--green-100);
     background-size: contain;
     background-position: center center;
@@ -67,7 +67,7 @@ input[type="checkbox"]:checked + p{
     height: 15px;   
     border: none;
     background: none;   
-    background-image: url(../../../public/icon/close.png);
+    background-image: url(..//public/icon/close.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -79,4 +79,5 @@ input[type="checkbox"]:checked + p{
     display: inline;
 
 }
+
 
