@@ -1,0 +1,17 @@
+:root{
+    --green-100: #50523B;
+    --green-200: #9a9c80;
+    --white: #FFFEF5;
+    --gray: #767676;
+    --black: #202020;
+    --beige-100: #F3F3E0;
+    --beige-200: #E7E7D6;
+    --beige-300: #D6D6C5;
+    --beige-400: #FAEBD7;
+
+    --gradient-100: #00000033;
+    --gradient-200: #0000001A;
+    --gradient-300: #50523b63;
+
+    --font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

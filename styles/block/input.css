@@ -1,0 +1,69 @@
+/*ПОЛЕ ВВОДА*/
+
+.todos__input-container{
+    width: 100%;
+    max-width: 546px;
+    height: auto;
+}
+
+.todos__input{
+    position: relative;    
+    width: 100%;
+    height: auto;
+    word-break: break-all;
+}
+
+.first{
+    z-index: 10;
+}
+
+.input-arrow{
+    position: absolute;
+    left: 7px;
+    top: 17px;
+    display: none;        
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+.input-container{
+    z-index: 10;    
+    padding: 0 20px 0 59px !important;
+}
+
+.input-container::placeholder{
+    font-style: italic;
+}
+
+.input-text{
+    display: flex;    
+    align-items: center;    
+    width: 100%;
+    height: 65px;
+    padding: 0 20px 0 7px;
+    box-sizing: border-box;
+    font-size: 24px;    
+    border-style: none;
+    background-color: var(--beige-100);    
+    box-shadow: 0 2px 4px 0 var(--gradient-100), 
+                0 25px 50px 0 var(--gradient-200);
+    transition: background-color 0.3s ease;
+}
+
+.input-text:hover{
+    background-color: var(--beige-200);
+}
+
+.input-text:focus{
+    background-color: var(--beige-200);
+    outline: 1px solid var(--green-200);
+}
+
+input{
+    flex: 1;
+    font-size: 24px;    
+    background-color: transparent;    
+    border: none;     
+    outline: none;
+}

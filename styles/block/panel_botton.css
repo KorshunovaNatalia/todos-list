@@ -1,0 +1,86 @@
+/*ПАНЕЛЬ УПРАВЛЕНИЯ ЗАДАЧАМИ*/
+
+.todos__button-container{
+    position: relative;   
+    display: none;   
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;      
+    width: 100%;
+    min-height: 45px;     
+    padding: 0 20px;
+    box-sizing: border-box;  
+    font-size: 16px;      
+    border-style: none; 
+    background-color: var(--beige-100);    
+    box-shadow: 0 2px 4px 0 var(--gradient-100), 
+                0 25px 50px 0 var(--gradient-200);
+}
+
+.todos__button-status{
+    position: absolute;
+    display: flex;    
+    align-items: center;
+    padding-left: 28%;    
+    gap: 10px;
+}
+
+.todos__button-status button{
+    font-size: 16px;    
+    border: none;
+    border-radius: 5px;
+    background: none;    
+    outline: 1px solid transparent;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.todos__button-status button.active{
+    color: var(--beige-400);    
+    background-color: var(--green-100);    
+    outline: 1px solid var(--green-100);
+}
+
+.todos__button-status button:active{
+    color: var(--black);    
+    background-color: var(--green-100);
+}
+
+.todos__button-status button:not(.active):hover{
+    color: var(--black);    
+    background-color: var(--gradient-300);
+}
+
+.todos__button-clear a{
+    display: none;
+    padding-bottom: 1px;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.todos__button-clear a:hover{
+    color: var(--green-100);    
+    border-bottom-color: var(--green-100);
+    cursor: pointer;
+}
+
+@media(max-width:500px){
+    .todos__button-clear a{
+        padding-top: 15px;
+    }
+
+    .todos__button-container{
+        height: 100%;
+        min-height: 70px;
+        align-items: start;
+    }
+
+    .todos__button-status{
+        bottom: 10px;        
+        justify-content: center; 
+        padding-left: 0;
+        box-sizing: border-box;               
+        width: 90%;
+    }
+}

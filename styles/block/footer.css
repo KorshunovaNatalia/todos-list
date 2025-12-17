@@ -1,0 +1,25 @@
+/*ФУТЕР*/
+
+.todos__info{
+    width: 100%;
+    max-width: 546px;    
+    margin: 60px 0 50px;
+    text-align: center;
+}
+
+.todos__info p{
+    font-size: 11px;
+}
+
+.todos__info a{
+    font-size: 11px;
+    color: var(--green-100);    
+    border-bottom: 1.5px solid transparent;
+    transition: border-bottom 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+}
+
+.todos__info a:hover{
+    color: var(--green-100);
+    border-bottom: 1.5px solid var(--green-100);
+}

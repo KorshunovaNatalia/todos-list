@@ -1,0 +1,28 @@
+/*ШАПКА*/
+
+.todos{
+    display: flex;
+    justify-content: center;
+}
+
+.todos__container{
+    display: block;     
+    width: 100%;
+    max-width: 560px;
+}
+
+.todos__title{
+    display: flex;
+    justify-content: center;    
+    width: 100%;
+    max-width: 546px;
+    margin-bottom: 30px;
+}
+
+.todos__title h1{
+    margin: 0;     
+    font-size: 80px;    
+    font-weight: normal;  
+    text-align: center;     
+    color: var(--green-100);    
+}
