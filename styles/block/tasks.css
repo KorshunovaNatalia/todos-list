@@ -44,7 +44,7 @@ input[type="checkbox"]:checked::after{
     top: 3px;   
     width: 23px;
     height: 23px;     
-    background-image: url('public/icon/icons8-галочка.svg');
+    background-image: url('../../public/icon/icons8-галочка.svg');
     border-color: var(--green-100);
     background-size: contain;
     background-position: center center;
@@ -79,6 +79,7 @@ input[type="checkbox"]:checked + p{
     display: inline;
 
 }
+
 
 
 
