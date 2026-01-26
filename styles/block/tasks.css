@@ -5,7 +5,7 @@
     align-items: center;    
     width: 100%;
     min-height: 65px;
-    padding-left: 7px;
+    padding: 0 50px 0 7px;
     box-sizing: border-box;
     font-size: 24px;    
     border-style: none;
@@ -16,7 +16,7 @@
 }
 
 .new-todo__input p{
-    padding-right:  50px;
+    padding-right:  10px;
 }
 
 .new-todo__input:hover{
