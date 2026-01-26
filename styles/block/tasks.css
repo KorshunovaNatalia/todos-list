@@ -71,7 +71,7 @@ input[type="checkbox"]:checked + p{
     height: 15px;   
     border: none;
     background: none;   
-    background-image: url(/public/icon/close.png);
+    background-image: url(./public/icon/close.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -83,3 +83,4 @@ input[type="checkbox"]:checked + p{
     display: inline;
 
 }
+
