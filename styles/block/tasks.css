@@ -1,11 +1,9 @@
-/*НОВАЯ ЗАДАЧА*/
-
 .new-todo__input{
     display: flex;    
     align-items: center;    
     width: 100%;
     min-height: 65px;
-    padding: 0 50px 0 7px;
+    padding: 14px 50px 14px 7px;
     box-sizing: border-box;
     font-size: 24px;    
     border-style: none;
@@ -13,10 +11,6 @@
     box-shadow: 0 2px 4px 0 var(--gradient-100), 
                 0 25px 50px 0 var(--gradient-200);
     transition: background-color 0.3s ease;
-}
-
-.new-todo__input p{
-    padding-right:  10px;
 }
 
 .new-todo__input:hover{
@@ -28,7 +22,7 @@
     outline: 1px solid #9a9c80;
 }
 
-input[type="checkbox"]{
+.todo-checkbox{
     position: relative;  
     flex: none;    
     width: 30px;
@@ -41,29 +35,29 @@ input[type="checkbox"]{
     cursor: pointer;
 }
 
-input[type="checkbox"]:checked::after{
+.todo-checkbox:checked::after{
     content: "";
     position: absolute;
     left: 2px;
     top: 3px;   
     width: 23px;
     height: 23px;     
-    background-image: url(../../public/icon/icons8-галочка.svg);
+    background-image: url(../../public/icon/check-mark.svg);
     border-color: var(--green-100);
     background-size: contain;
     background-position: center center;
 }
 
-input[type="checkbox"]:checked + p{
+.todo-checkbox:checked + .todo-text{
     color: var(--gray);
     text-decoration: line-through;
 }
 
-.new-todo__input:has(input[type="checkbox"]:checked){
+.new-todo__input:has(.todo-checkbox:checked){
     background-color: var(--beige-300);
 }
 
-.delete-button{
+.delete-btn{
     position: absolute;
     right: 20px;  
     display: none;
@@ -71,7 +65,7 @@ input[type="checkbox"]:checked + p{
     height: 15px;   
     border: none;
     background: none;   
-    background-image: url(../../public/icon/close.png);
+    background-image: url(../../public/icon/close.svg);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -79,9 +73,22 @@ input[type="checkbox"]:checked + p{
     cursor: pointer;
 }
 
-.new-todo__input:hover .delete-button{
+.new-todo__input:hover .delete-btn{
     display: inline;
-
 }
 
+.todo-text{
+    flex: 1;
+}
 
+.new-todo__input.new-todo__input--edit{
+    border: 1px solid var(--green-100);
+}
+
+.todo-input-edit{
+    flex: 1;
+    font-size: 24px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}

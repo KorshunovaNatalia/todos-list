@@ -1,5 +1,3 @@
-/*ФУТЕР*/
-
 .todos__info{
     width: 100%;
     max-width: 546px;    
@@ -7,11 +5,11 @@
     text-align: center;
 }
 
-.todos__info p{
+.todos__info .info-text{
     font-size: 11px;
 }
 
-.todos__info a{
+.todos__info .todos-link{
     font-size: 11px;
     color: var(--green-100);    
     border-bottom: 1.5px solid transparent;
@@ -19,7 +17,7 @@
     text-decoration: none;
 }
 
-.todos__info a:hover{
+.todos__info .todos-link:hover{
     color: var(--green-100);
     border-bottom: 1.5px solid var(--green-100);
 }

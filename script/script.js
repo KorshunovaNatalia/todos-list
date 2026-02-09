@@ -1,117 +1,246 @@
-let counttodo = 0;          //кол-во задач
-let countcompeled = 0;      //кол-во выполненых задач
-let filter = 'all';
+const newTodo = document.querySelector('.new-todo');
+const inputText = document.querySelector('.input-text');
+const todosCount = document.querySelector('.todos__count');
+const buttonArrow = document.querySelector('.input-arrow');
+const buttonContainer = document.querySelector('.todos__button-container');
+const buttonClear = document.querySelector('.todos__button-clear button');
+const buttonFilter = document.querySelectorAll('.todos__button-status button');
+
+const todoCheckbox = '.todo-checkbox';
+const todoInput = '.todos__input';
+
+let countTodo = 0;          //кол-во задач
+let countCompleted = 0;     //кол-во выполненных задач
+let filter = 'all';         //фильтр кнопок 
+let todos = [];             //массив для задач
 
 loadTodo();
 
-/*ВВОД НОВОЙ ЗАДАЧИ*/
-document.querySelector('.input-text').addEventListener('keypress', function(e){
-    if (e.key === 'Enter' && this.value.trim()){
-        if (counttodo === 0){
-            document.querySelector('.todos__button-container').style.display = 'flex';
-            document.querySelector('.input-arrow').style.display = 'flex';
+/*СОХРАНЕНИЕ ЗАДАЧ*/
+function saveTodo(){
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+/*ОБНОВЛЕНИЕ МАССИВ ЗАДАЧ*/
+function updateTodos(){
+    todos = [];
+    document.querySelectorAll('.todos__input .new-todo__input').forEach(e =>{
+        todos.push({
+            checked: e.querySelector(todoCheckbox).checked,
+            text: e.querySelector('.todo-text').textContent
+        });
+    });
+}
+
+/*ПОКАЗ / СКРЫТИЕ ЗАДАЧ ПО ФИЛЬТР-КНОПКАМ*/
+function updateFilter(){
+    newTodo.querySelectorAll(todoInput).forEach(e => {
+        if (!e.querySelector(todoCheckbox)) 
+            return;
+        
+        if(filter === 'active'){
+            if(e.querySelector(todoCheckbox).checked){
+                e.classList.add('hide');
+                e.classList.remove('show');
+            }
+            else{
+                e.classList.add('show');               
+                e.classList.remove('hide'); 
+            }
         }
-        const newtask = document.createElement('div');
-        newtask.className = 'todos__input';
-        newtask.innerHTML = 
+        else if(filter === 'completed'){
+            if(e.querySelector(todoCheckbox).checked){
+                e.classList.add('show');
+                e.classList.remove('hide');
+            }
+            else{
+                e.classList.add('hide');
+                e.classList.remove('show');               
+            }
+        }
+        else{
+            e.classList.add('show');
+            e.classList.remove('hide');
+        }
+    });
+}
+
+/*ОБНОВЛЕНИЕ КОЛ-ВА ЗАДАЧ*/
+function updateCount(){
+    todosCount.textContent = 
+    `${countTodo - countCompleted} item${countTodo - countCompleted == 1? '' : 's'} left`;
+
+    if(countCompleted > 0){
+        buttonClear.classList.add('show');
+        buttonClear.classList.remove('hide');
+    }
+    else{
+        buttonClear.classList.add('hide');        
+        buttonClear.classList.remove('show');
+    }
+
+    if(countTodo === 0){
+        buttonContainer.classList.add('hide');
+        buttonContainer.classList.remove('show');
+        buttonArrow.classList.add('hide');
+        buttonArrow.classList.remove('show');
+    }
+    else{
+        buttonContainer.classList.add('show');
+        buttonContainer.classList.remove('hide');
+        buttonArrow.classList.add('show');
+        buttonArrow.classList.remove('hide');
+    }
+}
+
+/*ЗАГРУЗКА СОХРАНЕННЫХ ЗАДАЧ*/
+function loadTodo(){
+    todos = JSON.parse(localStorage.getItem('todos') || '[]');
+    todos.forEach(todo =>{
+        const newTask = document.createElement('div');
+        newTask.className = 'todos__input';
+        newTask.innerHTML = 
+            `<div class="new-todo__input">
+                <input type="checkbox" class="todo-checkbox" ${todo.checked ? 'checked' : ''}>
+                <span class= "todo-text"> ${todo.text} </span>
+                <button class="delete-btn"></button>
+            </div>`;
+        newTodo.append(newTask);   
+        countTodo++;
+        if(todo.checked) countCompleted++;     
+    });
+
+    if(countTodo > 0){
+        buttonContainer.classList.add('show');
+        buttonContainer.classList.remove('hide');
+        buttonArrow.classList.add('show');
+        buttonArrow.classList.remove('hide');
+        updateCount();
+        updateFilter();
+    }
+}
+
+/*ВВОД НОВОЙ ЗАДАЧИ*/
+inputText.addEventListener('keypress', function(e){
+    if (e.key === 'Enter' && this.value.trim()){
+        if (countTodo === 0){
+            buttonContainer.classList.add('show');
+            buttonContainer.classList.remove('hide');
+            buttonArrow.classList.add('show');
+            buttonArrow.classList.remove('hide');
+        }
+        const newTask = document.createElement('div');
+        newTask.className = 'todos__input';
+        newTask.innerHTML = 
             `<div class="new-todo__input">
                 <input type="checkbox" class="todo-checkbox">
-                <p style="flex: 1;"> ${this.value.trim()} </p>
-                <button class="delete-button"></button>
+                <span class= "todo-text"> ${this.value.trim()} </span>
+                <button class="delete-btn"></button>
             </div>`;
-        document.querySelector('.new-todo').prepend(newtask);
+        newTodo.prepend(newTask);
         this.value = '';
-        counttodo++;
-        updatecount();
-        updatefilter();
-        saveTodo();
+        countTodo++;
+        updateTodos();
+        saveTodo();        
+        updateCount();
+        updateFilter();
     }
 });
 
 /*НАЖАТИЕ НА СТРЕЛКУ*/
-document.querySelector('.input-arrow').addEventListener('click', function(){
-    const checkboxes = document.querySelectorAll('.todo-checkbox');
+buttonArrow.addEventListener('click', function(){
+    const checkboxes = document.querySelectorAll(todoCheckbox);
     const all = Array.from(checkboxes).every(e => e.checked);
     checkboxes.forEach(e => {
         e.checked = !all;
     });
-    countcompeled = all ? 0 : checkboxes.length;
-    updatecount();
-    updatefilter();
-    saveTodo();
+    countCompleted = all ? 0 : checkboxes.length;
+    updateTodos();
+    saveTodo();    
+    updateCount();
+    updateFilter();
 });
 
 /*УДАЛЕНИЕ ЗАДАЧ*/
-document.querySelector('.new-todo').addEventListener('click', function(e){
-    if (e.target.classList.contains('delete-button')){
-        if (!e.target.closest('.todos__input')) 
+newTodo.addEventListener('click', function(e){
+    if (e.target.classList.contains('delete-btn')){
+        if (!e.target.closest(todoInput)) 
             return;
-        if (e.target.closest('.todos__input').querySelector('.todo-checkbox').checked){
-            countcompeled--;
+        if (e.target.closest(todoInput).querySelector(todoCheckbox).checked){
+            countCompleted--;
         }
-        e.target.closest('.todos__input').remove(); 
-        counttodo--;
-        updatecount();
-        updatefilter();
-        saveTodo();
-        if (counttodo === 0){
-            document.querySelector('.todos__button-container').style.display = 'none';
-            document.querySelector('.input-arrow').style.display = 'none';
+        e.target.closest(todoInput).remove(); 
+        countTodo--;
+        updateTodos();
+        saveTodo();        
+        updateCount();
+        updateFilter();
+
+        if (countTodo === 0){
+            buttonContainer.classList.add('hide');
+            buttonContainer.classList.remove('show');
+            buttonArrow.classList.add('hide');
+            buttonArrow.classList.remove('show');
         }
     }
 });
 
 /*ИЗМЕНЕНИЕ СОСТОЯНИЯ ЗАДАЧ*/
-document.querySelector('.new-todo').addEventListener('change', function(e){
+newTodo.addEventListener('change', function(e){
     if (e.target.classList.contains('todo-checkbox')){
         if (e.target.checked){
-            countcompeled++;
+            countCompleted++;
         }
         else{
-            countcompeled--;
+            countCompleted--;
         }
-        updatecount();
-        updatefilter();
-        saveTodo();
+        updateTodos();
+        saveTodo();        
+        updateCount();
+        updateFilter();
     }
 });
 
 /*УДАЛЕНИЕ ЗАВЕРШЕННЫХ ЗАДАЧ*/
-document.querySelector('.todos__button-clear a').addEventListener('click', function(){
-    document.querySelectorAll('.new-todo .todos__input').forEach(e =>{
-        if(e.querySelector('.todo-checkbox').checked){
+buttonClear.addEventListener('click', function(){
+    newTodo.querySelectorAll(todoInput).forEach(e =>{
+        if(e.querySelector(todoCheckbox).checked){
             e.remove();
-            counttodo--;
-            countcompeled--;
+            countTodo--;
+            countCompleted--;
         }
     });
-    updatecount();
-    updatefilter();
-    saveTodo();
+    updateTodos();
+    saveTodo();    
+    updateCount();
+    updateFilter();
 });
 
 /*ФИЛЬТР-КНОПКИ*/
-document.querySelectorAll('.todos__button-status button').forEach((button, i) =>{
+buttonFilter.forEach(button =>{
     button.addEventListener('click', function(){
-        document.querySelectorAll('.todos__button-status button').forEach(e =>{
+        buttonFilter.forEach(e =>{
             e.classList.remove('active');
         });
         this.classList.add('active');
-        filter = ['all', 'active', 'completed'][i];
-        updatefilter();
-        saveTodo();
+        filter = this.dataset.state;
+        updateFilter();
     });
 });
 
 /*РЕДАКТИРОВАНИЕ ЗАДАЧИ*/
-document.querySelector('.new-todo').addEventListener('dblclick', function(e){
-    if(e.target.tagName === 'P'){
+newTodo.addEventListener('dblclick', function(e){
+    if(e.target.classList.contains('todo-text')){
         const element = e.target;
         const input = document.createElement('input');
+        const todoInput = element.closest('.new-todo__input')
+
+        input.className = 'todo-input-edit';
         input.value = element.textContent.trim();
         element.replaceWith(input);
         input.focus();
-        input.closest('.new-todo__input').style.border = '1px solid #50523b';
+
+        todoInput.classList.add('new-todo__input--edit');
 
         let flag = false;
 
@@ -123,7 +252,8 @@ document.querySelector('.new-todo').addEventListener('dblclick', function(e){
                 element.textContent = input.value.trim();
             }
             input.replaceWith(element);
-            element.closest('.new-todo__input').style.border = 'none';
+            todoInput.classList.remove('new-todo__input--edit');
+            updateTodos();
             saveTodo();
         }
         
@@ -132,7 +262,7 @@ document.querySelector('.new-todo').addEventListener('dblclick', function(e){
             flag = true;
 
             input.replaceWith(element);
-            element.closest('.new-todo__input').style.border = 'none';
+            todoInput.classList.remove('new-todo__input--edit');
         }
 
         input.addEventListener('blur', save);
@@ -144,68 +274,3 @@ document.querySelector('.new-todo').addEventListener('dblclick', function(e){
         });
     }
 });
-
-/*ОБНОВЛЕНИЕ КОЛ-ВА ЗАДАЧ*/
-function updatecount(){
-    document.querySelector('.todos__count').textContent = 
-    `${counttodo - countcompeled} item${counttodo - countcompeled == 1? '' : 's'} left`;
-
-    if(countcompeled > 0){
-        document.querySelector('.todos__button-clear a').style.display = 'block';
-    }
-    else{
-        document.querySelector('.todos__button-clear a').style.display = 'none';
-    }
-
-    if(counttodo === 0){
-        document.querySelector('.todos__button-container').style.display = 'none';
-        document.querySelector('.input-arrow').style.display = 'none';
-    }
-}
-
-/*ПОКАЗ / СКРЫТИЕ ЗАДАЧ ПО ФИЛЬТР-КНОПКАМ*/
-function updatefilter(){
-    document.querySelectorAll('.new-todo .todos__input').forEach(e => {
-        if (!e.querySelector('.todo-checkbox')) 
-            return;
-        e.style.display = filter === 'active'? (e.querySelector('.todo-checkbox').checked ? 'none' : 'block'):
-        e.style.display = filter === 'completed'? (e.querySelector('.todo-checkbox').checked ? 'block' : 'none'): 'block';
-    });
-}
-
-/*СОХРАНЕНИЕ ЗАДАЧ*/
-function saveTodo(){
-    const todo = [];
-    document.querySelectorAll('.todos__input .new-todo__input').forEach(e =>{
-        todo.push({
-            checked: e.querySelector('.todo-checkbox').checked,
-            text: e.querySelector('p').textContent
-        });
-    });
-    localStorage.setItem('todos', JSON.stringify(todo));
-}
-
-/*ЗАГРУЗКА СОХРАНЕНННЫХ ЗАДАЧ*/
-function loadTodo(){
-    const save = JSON.parse(localStorage.getItem('todos') || '[]');
-    save.forEach(todo =>{
-        const newtask = document.createElement('div');
-        newtask.className = 'todos__input';
-        newtask.innerHTML = 
-            `<div class="new-todo__input">
-                <input type="checkbox" class="todo-checkbox" ${todo.checked ? 'checked' : ''}>
-                <p style="flex: 1;"> ${todo.text} </p>
-                <button class="delete-button"></button>
-            </div>`;
-        document.querySelector('.new-todo').append(newtask);   
-        counttodo++;
-        if(todo.checked) countcompeled++;     
-    });
-
-    if(counttodo > 0){
-        document.querySelector('.todos__button-container').style.display = 'flex';
-        document.querySelector('.input-arrow').style.display = 'flex';
-        updatecount();
-        updatefilter();
-    }
-}

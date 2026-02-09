@@ -1,5 +1,3 @@
-/*ПОЛЕ ВВОДА*/
-
 .todos__input-container{
     width: 100%;
     max-width: 546px;
@@ -27,9 +25,12 @@
     cursor: pointer;
 }
 
-.input-container{
-    z-index: 10;    
-    padding: 0 20px 0 59px !important;
+.input-arrow.show{
+    display: flex;
+}
+
+.input-arrow.hide{
+    display: none;
 }
 
 .input-container::placeholder{
@@ -41,7 +42,7 @@
     align-items: center;    
     width: 100%;
     height: 65px;
-    padding: 0 20px 0 7px;
+    padding: 0 20px 0 59px;
     box-sizing: border-box;
     font-size: 24px;    
     border-style: none;
@@ -58,12 +59,4 @@
 .input-text:focus{
     background-color: var(--beige-200);
     outline: 1px solid var(--green-200);
-}
-
-input{
-    flex: 1;
-    font-size: 24px;    
-    background-color: transparent;    
-    border: none;     
-    outline: none;
 }
