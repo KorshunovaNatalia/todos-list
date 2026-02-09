@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="/public/icon/to-do-list.png">
+    <link rel="icon" type="image/svg" href="/public/favicon.svg">
     <link href="./styles/main.css" rel="stylesheet">
     <title>TodoMVC: JavaScript Es6 Webpack</title>
 </head>
 <body>
-    <!--БЛОК TODOS-->
     <section class="todos">
         <div class="todos__container">
+            
             <header class="todos__title">
-                <h1>TODOS</h1>
+                <h1 class="main-text">TODOS</h1>
             </header>     
+
             <main class="todos__input-container">
                 <div class="todos__input first">
                     <img class="input-arrow" src="./public/icon/arrow.svg">
@@ -23,24 +24,24 @@
                     <div class="new-todo"></div>
                 </div>
                 <div class="todos__button-container">
-                    <div class="todos__count-container">
-                        <p class="todos__count"></p>
-                    </div>
+                        <span class="todos__count"></span>
                     <div class="todos__button-status">
-                        <button class="active">All</button>
-                        <button>Active</button>
-                        <button>Completed</button>
+                        <button data-state="all" class="active filter-btn">All</button>
+                        <button data-state="active" class="filter-btn">Active</button>
+                        <button data-state="completed" class="filter-btn">Completed</button>
                     </div>
                     <div class="todos__button-clear">
-                        <a>Clear completed</a>
+                        <button class="clear-btn">Clear completed</button>
                     </div>
                 </div>
             </main>
+
             <footer class="todos__info">
-                <p>Double-click to edit a todo</p>
-                <p>Created by the TodoMVC Team</p>
-                <p>Part of <a href="https://todomvc.com/">TodoMVC</a></p>
+                <p class="info-text">Double-click to edit a todo</p>
+                <p class="info-text">Created by the TodoMVC Team</p>
+                <p class="info-text">Part of <a href="https://todomvc.com/" class="todos-link">TodoMVC</a></p>
             </footer>  
+
         </div>        
     </section>
        
@@ -48,6 +49,3 @@
 </body>
 
 </html>
-
-
-
