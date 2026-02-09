@@ -1,8 +1,8 @@
-@import url(/styles/block/common.css);
-@import url(/styles/block/footer.css);
-@import url(/styles/block/header.css);
-@import url(/styles/block/input.css);
-@import url(/styles/block/library.css);
-@import url(/styles/block/panel-button.css);
-@import url(/styles/block/tasks.css);
+@import url("./block/common.css");
+@import url("./block/footer.css");
+@import url("./block/header.css");
+@import url("./block/input.css");
+@import url("./block/library.css");
+@import url("./block/panel-button.css");
+@import url("./block/tasks.css");
 
