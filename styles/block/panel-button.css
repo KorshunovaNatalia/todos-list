@@ -1,5 +1,3 @@
-/*ПАНЕЛЬ УПРАВЛЕНИЯ ЗАДАЧАМИ*/
-
 .todos__button-container{
     position: relative;   
     display: none;   
@@ -25,7 +23,7 @@
     gap: 10px;
 }
 
-.todos__button-status button{
+.todos__button-status .filter-btn{
     font-size: 16px;    
     border: none;
     border-radius: 5px;
@@ -35,38 +33,64 @@
     cursor: pointer;
 }
 
-.todos__button-status button.active{
+.todos__button-status .filter-btn.active{
     color: var(--beige-400);    
     background-color: var(--green-100);    
     outline: 1px solid var(--green-100);
 }
 
-.todos__button-status button:active{
+.todos__button-status .filter-btn:active{
     color: var(--black);    
     background-color: var(--green-100);
 }
 
-.todos__button-status button:not(.active):hover{
+.todos__button-status .filter-btn:not(.active):hover{
     color: var(--black);    
     background-color: var(--gradient-300);
 }
 
-.todos__button-clear a{
-    display: none;
+.todos__button-clear .clear-btn{
     padding-bottom: 1px;
+    font-size: 16px;   
+    background: none;
+    border: none;
     border-bottom: 1px solid transparent;
     transition: border-bottom-color 0.3s ease, color 0.3s ease;
     cursor: pointer;
 }
 
-.todos__button-clear a:hover{
+.todos__button-clear .clear-btn:hover{
     color: var(--green-100);    
     border-bottom-color: var(--green-100);
     cursor: pointer;
 }
 
+.todos__button-container.show{
+    display: flex;
+}
+
+.todos__button-container.hide{
+    display: none;
+}
+
+.todos__button-clear .clear-btn.show{
+    display: block;
+}
+
+.todos__button-clear .clear-btn.hide{
+    display: none;
+}
+
+.todos__input.show{
+    display: block;
+}
+
+.todos__input.hide{
+    display: none;
+}
+
 @media(max-width:500px){
-    .todos__button-clear a{
+    .todos__button-clear .clear-btn{
         padding-top: 15px;
     }
 
