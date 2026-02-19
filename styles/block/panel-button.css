@@ -65,28 +65,19 @@
     cursor: pointer;
 }
 
-.todos__button-container.show{
-    display: flex;
-}
-
-.todos__button-container.hide{
-    display: none;
-}
-
-.todos__button-clear .clear-btn.show{
-    display: block;
-}
-
-.todos__button-clear .clear-btn.hide{
-    display: none;
-}
-
-.todos__input.show{
-    display: block;
-}
-
+.todos__button-container.hide,
+.todos__button-clear .clear-btn.hide,
 .todos__input.hide{
     display: none;
+}
+
+.todos__button-clear .clear-btn.block,
+.todos__input.block{
+    display: block;
+}
+
+.todos__button-container.flex{
+    display: flex;
 }
 
 @media(max-width:500px){
