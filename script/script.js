@@ -1,3 +1,5 @@
+const storageKey = 'todos';
+
 const newTodo = document.querySelector('.new-todo');
 const inputText = document.querySelector('.input-text');
 const todosCount = document.querySelector('.todos__count');
@@ -9,27 +11,56 @@ const buttonFilter = document.querySelectorAll('.todos__button-status button');
 const todoCheckbox = '.todo-checkbox';
 const todoInput = '.todos__input';
 
-let countTodo = 0;          //кол-во задач
-let countCompleted = 0;     //кол-во выполненных задач
 let filter = 'all';         //фильтр кнопок 
 let todos = [];             //массив для задач
 
-loadTodo();
+/*ПОКАЗ/СКРЫТИЕ ЗАДАЧИ*/
+function stateTodo(e, show, type = 'block'){
+    if(show){
+        e.classList.add(type);
+        e.classList.remove('hide');
+        return;
+    }
+    e.classList.add('hide');
+    e.classList.remove(type);
+}
+
+/*СЧИТЫВАНИЕ ВЫПОЛНЕННЫХ ЗАДАЧ*/
+function countCompletedTodo(){
+    let count = 0;
+    for(let i = 0; i < todos.length; i++){
+        if(todos[i].checked) count++;
+    }
+    return count;
+}
+
+/*СОЗДАНИЕ ЗАДАЧИ*/
+function createTodo(todo){
+    const newTask = document.createElement('div');
+    newTask.className = 'todos__input';
+    newTask.innerHTML = 
+        `<div class="new-todo__input">
+            <input type="checkbox" class="todo-checkbox" ${todo.checked ? 'checked' : ''}>
+            <span class= "todo-text"> ${todo.text} </span>
+            <button class="delete-btn"></button>
+        </div>`;
+    return newTask;
+}
 
 /*СОХРАНЕНИЕ ЗАДАЧ*/
 function saveTodo(){
-    localStorage.setItem('todos', JSON.stringify(todos));
+    localStorage.setItem(storageKey, JSON.stringify(todos));
 }
 
-/*ОБНОВЛЕНИЕ МАССИВ ЗАДАЧ*/
-function updateTodos(){
-    todos = [];
-    document.querySelectorAll('.todos__input .new-todo__input').forEach(e =>{
-        todos.push({
-            checked: e.querySelector(todoCheckbox).checked,
-            text: e.querySelector('.todo-text').textContent
-        });
+/*ОБНОВЛЕНИЕ UI*/
+function updateUI(){
+    newTodo.innerHTML = '';
+    todos.forEach(todo => {
+        newTodo.append(createTodo(todo));
     });
+    saveTodo();        
+    updateCount();
+    updateFilter();
 }
 
 /*ПОКАЗ / СКРЫТИЕ ЗАДАЧ ПО ФИЛЬТР-КНОПКАМ*/
@@ -38,182 +69,89 @@ function updateFilter(){
         if (!e.querySelector(todoCheckbox)) 
             return;
         
-        if(filter === 'active'){
-            if(e.querySelector(todoCheckbox).checked){
-                e.classList.add('hide');
-                e.classList.remove('show');
-            }
-            else{
-                e.classList.add('show');               
-                e.classList.remove('hide'); 
-            }
-        }
-        else if(filter === 'completed'){
-            if(e.querySelector(todoCheckbox).checked){
-                e.classList.add('show');
-                e.classList.remove('hide');
-            }
-            else{
-                e.classList.add('hide');
-                e.classList.remove('show');               
-            }
-        }
-        else{
-            e.classList.add('show');
-            e.classList.remove('hide');
-        }
+        const isChecked = e.querySelector(todoCheckbox).checked;
+        const isShown = (!isChecked && filter === 'active') ||
+                        (isChecked && filter === 'completed') ||
+                        (filter === 'all');
+
+        stateTodo(e, isShown, 'block');
     });
 }
 
 /*ОБНОВЛЕНИЕ КОЛ-ВА ЗАДАЧ*/
 function updateCount(){
+    const activeTodo = todos.length - countCompletedTodo();
+
     todosCount.textContent = 
-    `${countTodo - countCompleted} item${countTodo - countCompleted == 1? '' : 's'} left`;
+    `${activeTodo} item${activeTodo == 1? '' : 's'} left`;
 
-    if(countCompleted > 0){
-        buttonClear.classList.add('show');
-        buttonClear.classList.remove('hide');
-    }
-    else{
-        buttonClear.classList.add('hide');        
-        buttonClear.classList.remove('show');
-    }
-
-    if(countTodo === 0){
-        buttonContainer.classList.add('hide');
-        buttonContainer.classList.remove('show');
-        buttonArrow.classList.add('hide');
-        buttonArrow.classList.remove('show');
-    }
-    else{
-        buttonContainer.classList.add('show');
-        buttonContainer.classList.remove('hide');
-        buttonArrow.classList.add('show');
-        buttonArrow.classList.remove('hide');
-    }
+    stateTodo(buttonClear, countCompletedTodo() > 0, 'block');
+    stateTodo(buttonContainer, todos.length > 0, 'flex');
+    stateTodo(buttonArrow, todos.length > 0, 'flex');
 }
 
 /*ЗАГРУЗКА СОХРАНЕННЫХ ЗАДАЧ*/
 function loadTodo(){
-    todos = JSON.parse(localStorage.getItem('todos') || '[]');
-    todos.forEach(todo =>{
-        const newTask = document.createElement('div');
-        newTask.className = 'todos__input';
-        newTask.innerHTML = 
-            `<div class="new-todo__input">
-                <input type="checkbox" class="todo-checkbox" ${todo.checked ? 'checked' : ''}>
-                <span class= "todo-text"> ${todo.text} </span>
-                <button class="delete-btn"></button>
-            </div>`;
-        newTodo.append(newTask);   
-        countTodo++;
-        if(todo.checked) countCompleted++;     
-    });
-
-    if(countTodo > 0){
-        buttonContainer.classList.add('show');
-        buttonContainer.classList.remove('hide');
-        buttonArrow.classList.add('show');
-        buttonArrow.classList.remove('hide');
-        updateCount();
-        updateFilter();
-    }
+    todos = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    updateUI();
 }
+
+loadTodo();
 
 /*ВВОД НОВОЙ ЗАДАЧИ*/
 inputText.addEventListener('keypress', function(e){
     if (e.key === 'Enter' && this.value.trim()){
-        if (countTodo === 0){
-            buttonContainer.classList.add('show');
-            buttonContainer.classList.remove('hide');
-            buttonArrow.classList.add('show');
-            buttonArrow.classList.remove('hide');
-        }
-        const newTask = document.createElement('div');
-        newTask.className = 'todos__input';
-        newTask.innerHTML = 
-            `<div class="new-todo__input">
-                <input type="checkbox" class="todo-checkbox">
-                <span class= "todo-text"> ${this.value.trim()} </span>
-                <button class="delete-btn"></button>
-            </div>`;
-        newTodo.prepend(newTask);
+        todos.unshift({
+            checked: false,
+            text: this.value.trim()
+        });
         this.value = '';
-        countTodo++;
-        updateTodos();
-        saveTodo();        
-        updateCount();
-        updateFilter();
+        updateUI();
     }
 });
 
 /*НАЖАТИЕ НА СТРЕЛКУ*/
 buttonArrow.addEventListener('click', function(){
-    const checkboxes = document.querySelectorAll(todoCheckbox);
-    const all = Array.from(checkboxes).every(e => e.checked);
-    checkboxes.forEach(e => {
+    const all = todos.every(e => e.checked);
+    todos.forEach(e => {
         e.checked = !all;
     });
-    countCompleted = all ? 0 : checkboxes.length;
-    updateTodos();
-    saveTodo();    
-    updateCount();
-    updateFilter();
+    updateUI();
 });
 
 /*УДАЛЕНИЕ ЗАДАЧ*/
 newTodo.addEventListener('click', function(e){
-    if (e.target.classList.contains('delete-btn')){
+    const isDeleteBtn = e.target.classList.contains('delete-btn');
+    if (isDeleteBtn){
         if (!e.target.closest(todoInput)) 
             return;
-        if (e.target.closest(todoInput).querySelector(todoCheckbox).checked){
-            countCompleted--;
-        }
-        e.target.closest(todoInput).remove(); 
-        countTodo--;
-        updateTodos();
-        saveTodo();        
-        updateCount();
-        updateFilter();
-
-        if (countTodo === 0){
-            buttonContainer.classList.add('hide');
-            buttonContainer.classList.remove('show');
-            buttonArrow.classList.add('hide');
-            buttonArrow.classList.remove('show');
-        }
+        const index = Array.from(newTodo.querySelectorAll(todoInput)).indexOf(e.target.closest(todoInput));
+        todos.splice(index, 1);
+        updateUI();
     }
 });
 
 /*ИЗМЕНЕНИЕ СОСТОЯНИЯ ЗАДАЧ*/
 newTodo.addEventListener('change', function(e){
-    if (e.target.classList.contains('todo-checkbox')){
-        if (e.target.checked){
-            countCompleted++;
-        }
-        else{
-            countCompleted--;
-        }
-        updateTodos();
-        saveTodo();        
-        updateCount();
-        updateFilter();
+    const isCheckbox = e.target.classList.contains('todo-checkbox');
+    if (isCheckbox){
+        const todoElement = e.target.closest(todoInput);
+        const index = Array.from(newTodo.querySelectorAll(todoInput)).indexOf(todoElement);
+        todos[index].checked = e.target.checked;
+        updateUI();
     }
 });
 
 /*УДАЛЕНИЕ ЗАВЕРШЕННЫХ ЗАДАЧ*/
 buttonClear.addEventListener('click', function(){
     newTodo.querySelectorAll(todoInput).forEach(e =>{
-        if(e.querySelector(todoCheckbox).checked){
+        const isCompleted = e.querySelector(todoCheckbox).checked;
+        if(isCompleted){
             e.remove();
-            countTodo--;
-            countCompleted--;
         }
     });
-    updateTodos();
-    saveTodo();    
-    updateCount();
-    updateFilter();
+    todos = todos.filter(todo => !todo.checked);
+    updateUI();
 });
 
 /*ФИЛЬТР-КНОПКИ*/
@@ -230,10 +168,13 @@ buttonFilter.forEach(button =>{
 
 /*РЕДАКТИРОВАНИЕ ЗАДАЧИ*/
 newTodo.addEventListener('dblclick', function(e){
-    if(e.target.classList.contains('todo-text')){
+    const isTodoText = e.target.classList.contains('todo-text');
+    if(isTodoText){
         const element = e.target;
         const input = document.createElement('input');
-        const todoInput = element.closest('.new-todo__input')
+        const todoInput = element.closest('.new-todo__input');
+        const todoElement = element.closest('.todos__input');
+        const index = Array.from(newTodo.querySelectorAll('.todos__input')).indexOf(todoElement);
 
         input.className = 'todo-input-edit';
         input.value = element.textContent.trim();
@@ -250,11 +191,11 @@ newTodo.addEventListener('dblclick', function(e){
 
             if(input.value.trim()){
                 element.textContent = input.value.trim();
+                todos[index].text = input.value.trim();
             }
             input.replaceWith(element);
             todoInput.classList.remove('new-todo__input--edit');
-            updateTodos();
-            saveTodo();
+            updateUI();
         }
         
         function cancel(){
