@@ -25,7 +25,7 @@
     cursor: pointer;
 }
 
-.input-arrow.show{
+.input-arrow.flex{
     display: flex;
 }
 
