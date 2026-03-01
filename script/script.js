@@ -27,23 +27,36 @@ function stateTodo(e, show, type = 'block'){
 
 /*СЧИТЫВАНИЕ ВЫПОЛНЕННЫХ ЗАДАЧ*/
 function countCompletedTodo(){
-    let count = 0;
-    for(let i = 0; i < todos.length; i++){
-        if(todos[i].checked) count++;
-    }
-    return count;
+    return todos.filter(t => t.checked).length;
 }
 
 /*СОЗДАНИЕ ЗАДАЧИ*/
 function createTodo(todo){
     const newTask = document.createElement('div');
     newTask.className = 'todos__input';
-    newTask.innerHTML = 
-        `<div class="new-todo__input">
-            <input type="checkbox" class="todo-checkbox" ${todo.checked ? 'checked' : ''}>
-            <span class= "todo-text"> ${todo.text} </span>
-            <button class="delete-btn"></button>
-        </div>`;
+    newTask.dataset.id = todo.id;
+
+    const newContent = document.createElement('div');
+    newContent.className = 'new-todo__input';
+
+    const newCheckbox = document.createElement('input');
+    newCheckbox.type = 'checkbox';
+    newCheckbox.className = 'todo-checkbox';
+    if(todo.checked){
+        newCheckbox.checked = true;
+    }
+
+    const newText = document.createElement('span');
+    newText.className = 'todo-text';
+    newText.textContent = todo.text;
+    
+    const newDeleteBtn = document.createElement('button');
+    newDeleteBtn.className = 'delete-btn';
+
+    newContent.appendChild(newCheckbox);
+    newContent.appendChild(newText);
+    newContent.appendChild(newDeleteBtn);
+    newTask.appendChild(newContent);
     return newTask;
 }
 
@@ -92,7 +105,17 @@ function updateCount(){
 
 /*ЗАГРУЗКА СОХРАНЕННЫХ ЗАДАЧ*/
 function loadTodo(){
-    todos = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    const loadTodos = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    if(loadTodos.length > 0 && !loadTodos[0].id){
+        todos = loadTodos.map((todo, todoId) => ({
+            ...todo,
+            id: todoId + 1
+        }));
+    }
+    else{
+        todos = loadTodos;
+    }
     updateUI();
 }
 
@@ -101,7 +124,14 @@ loadTodo();
 /*ВВОД НОВОЙ ЗАДАЧИ*/
 inputText.addEventListener('keypress', function(e){
     if (e.key === 'Enter' && this.value.trim()){
+        let todoId = 0;
+        for(let i = 0; i < todos.length; i++){
+            if(todos[i].id > todoId){
+                todoId = todos[i].id;
+            }
+        }
         todos.unshift({
+            id: todoId + 1,
             checked: false,
             text: this.value.trim()
         });
@@ -123,11 +153,16 @@ buttonArrow.addEventListener('click', function(){
 newTodo.addEventListener('click', function(e){
     const isDeleteBtn = e.target.classList.contains('delete-btn');
     if (isDeleteBtn){
-        if (!e.target.closest(todoInput)) 
+        const todoElement = e.target.closest(todoInput);
+        if(!todoElement)
             return;
-        const index = Array.from(newTodo.querySelectorAll(todoInput)).indexOf(e.target.closest(todoInput));
-        todos.splice(index, 1);
+
+        const todoId = todoElement.dataset.id;
+        const index = todos.findIndex(todo => todo.id == todoId);
+        if(index !== -1){
+            todos.splice(index, 1);
         updateUI();
+        }
     }
 });
 
@@ -136,20 +171,17 @@ newTodo.addEventListener('change', function(e){
     const isCheckbox = e.target.classList.contains('todo-checkbox');
     if (isCheckbox){
         const todoElement = e.target.closest(todoInput);
-        const index = Array.from(newTodo.querySelectorAll(todoInput)).indexOf(todoElement);
-        todos[index].checked = e.target.checked;
-        updateUI();
+        const todoId = todoElement.dataset.id;
+        const todo = todos.find(e => e.id == todoId);
+        if(todo){
+            todo.checked = e.target.checked;
+            updateUI();
+        }
     }
 });
 
 /*УДАЛЕНИЕ ЗАВЕРШЕННЫХ ЗАДАЧ*/
 buttonClear.addEventListener('click', function(){
-    newTodo.querySelectorAll(todoInput).forEach(e =>{
-        const isCompleted = e.querySelector(todoCheckbox).checked;
-        if(isCompleted){
-            e.remove();
-        }
-    });
     todos = todos.filter(todo => !todo.checked);
     updateUI();
 });
@@ -174,7 +206,11 @@ newTodo.addEventListener('dblclick', function(e){
         const input = document.createElement('input');
         const todoInput = element.closest('.new-todo__input');
         const todoElement = element.closest('.todos__input');
-        const index = Array.from(newTodo.querySelectorAll('.todos__input')).indexOf(todoElement);
+        const todoId = todoElement.dataset.id;
+
+        const todo = todos.find(e => e.id == todoId);
+        if(!todo) 
+            return;
 
         input.className = 'todo-input-edit';
         input.value = element.textContent.trim();
@@ -183,35 +219,34 @@ newTodo.addEventListener('dblclick', function(e){
 
         todoInput.classList.add('new-todo__input--edit');
 
-        let flag = false;
-
         function save(){
-            if(flag) return;
-            flag = true;
-
             if(input.value.trim()){
+                todo.text = input.value.trim();
                 element.textContent = input.value.trim();
-                todos[index].text = input.value.trim();
             }
             input.replaceWith(element);
             todoInput.classList.remove('new-todo__input--edit');
-            updateUI();
+            saveTodo();
         }
         
         function cancel(){
-            if(flag) return;
-            flag = true;
-
+            input.removeEventListener('blur', save);
             input.replaceWith(element);
             todoInput.classList.remove('new-todo__input--edit');
         }
 
         input.addEventListener('blur', save);
         input.addEventListener('keypress', function(e){
-            if(e.key === 'Enter') save();
+            if(e.key === 'Enter') {
+                input.blur();
+            }
         });
+
         input.addEventListener('keydown', function(e){
-            if(e.key === 'Escape') cancel();
+            if(e.key === 'Escape') {
+                e.preventDefault();
+                cancel();
+            }
         });
     }
 });
